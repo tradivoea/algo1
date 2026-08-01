@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>TRADIVO V12 | Professional MT5 Expert Advisor</title>
+
+  <meta name="description" content="Discover TRADIVO V12, a professional MetaTrader 5 Expert Advisor featuring automated trade execution, built-in risk management and simple setup.">
+  <meta name="keywords" content="TRADIVO V12, MT5 Expert Advisor, MetaTrader 5 EA, automated trading software, forex EA, algorithmic trading">
+  <meta name="author" content="Tradivo FX">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#070708">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="TRADIVO V12 | Professional MT5 Expert Advisor">
+  <meta property="og:description" content="Professional automated trading technology built for MetaTrader 5.">
+  <meta property="og:image" content="logo.png">
+  <meta property="og:url" content="https://tradivofx.com">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://tradivofx.com">
+  <link rel="icon" href="logo.png" type="image/png">
+
+  <style>
+    :root {
+      --background: #050506;
+      --red: #ff2436;
+      --dark-red: #9d0012;
+      --white: #f8f8fa;
+      --muted: #a7a7af;
+      --border: rgba(255, 255, 255, 0.1);
+      --glass: rgba(255, 255, 255, 0.045);
+      --radius: 24px;
+      --shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--background);
+      color: var(--white);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      position: fixed;
+      z-index: -3;
+      inset: 0;
+      background:
+        radial-gradient(circle at 75% 10%, rgba(255, 36, 54, 0.16), transparent 31%),
+        radial-gradient(circle at 15% 65%, rgba(160, 0, 18, 0.1), transparent 32%),
+        linear-gradient(135deg, #020203, #0b0b0d 55%, #030304);
+      content: "";
+      pointer-events: none;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    ::selection {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .grid-background {
+      position: fixed;
+      z-index: -2;
+      inset: 0;
+      opacity: 0.23;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(to bottom, #000, transparent 86%);
+    }
+
+    .orb {
+      position: fixed;
+      z-index: -1;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: 0.2;
+      animation: float 10s ease-in-out infinite;
+    }
+
+    .orb-one {
+      top: 8%;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: var(--red);
+    }
+
+    .orb-two {
+      bottom: 15%;
+      left: -90px;
+      width: 220px;
+      height: 220px;
+      background: #6e0010;
+      animation-delay: -4s;
+    }
+
+    @keyframes float {
+      50% {
+        transform: translate3d(-25px, 35px, 0) scale(1.1);
+      }
+    }
+
+    .container {
+      width: min(1160px, calc(100% - 40px));
+      margin: auto;
+    }
+
+    .navigation {
+      position: fixed;
+      z-index: 20;
+      top: 0;
+      right: 0;
+      left: 0;
+      border-bottom: 1px solid transparent;
+      transition: 0.3s;
+    }
+
+    .navigation.scrolled {
+      border-color: var(--border);
+      background: rgba(5, 5, 6, 0.72);
+      backdrop-filter: blur(18px);
+    }
+
+    .navigation-inner {
+      display: flex;
+      height: 78px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      letter-spacing: 0.07em;
+    }
+
+    .brand img {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+    }
+
+    .brand-fallback {
+      display: none;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: 1px solid rgba(255, 36, 54, 0.5);
+      border-radius: 13px;
+      background: linear-gradient(135deg, #250007, #e00820);
+      box-shadow: 0 0 30px rgba(255, 36, 54, 0.22);
+      font-weight: 950;
+    }
+
+    .brand em {
+      color: var(--red);
+      font-style: normal;
+    }
+
+    .navigation-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      color: #c7c7cd;
+      font-size: 0.9rem;
+    }
+
+    .navigation-links a {
+      transition: 0.25s;
+    }
+
+    .navigation-links a:hover {
+      color: #fff;
+    }
+
+    .navigation-button {
+      padding: 10px 16px;
+      border: 1px solid rgba(255, 36, 54, 0.55);
+      border-radius: 999px;
+      background: rgba(255, 36, 54, 0.08);
+    }
+
+    .hero {
+      position: relative;
+      display: grid;
+      min-height: 100vh;
+      padding: 138px 0 78px;
+      place-items: center;
+    }
+
+    .hero-content {
+      max-width: 950px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 28px;
+      padding: 8px 14px;
+      border: 1px solid rgba(255, 36, 54, 0.28);
+      border-radius: 999px;
+      background: rgba(255, 36, 54, 0.07);
+      color: #ff8993;
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      animation: rise 0.7s both;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 15px var(--red);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      50% {
+        opacity: 0.35;
+        transform: scale(0.7);
+      }
+    }
+
+    h1 {
+      background: linear-gradient(180deg, #fff 18%, #8b8b91 100%);
+      background-clip: text;
+      color: transparent;
+      font-size: clamp(4.2rem, 12vw, 9.4rem);
+      font-weight: 950;
+      letter-spacing: -0.075em;
+      line-height: 0.84;
+      animation: rise 0.8s 0.08s both;
+    }
+
+    h1 .version {
+      color: var(--red);
+      -webkit-text-fill-color: var(--red);
+      filter: drop-shadow(0 0 35px rgba(255, 36, 54, 0.24));
+    }
+
+    .hero-subtitle {
+      margin: 27px 0 15px;
+      font-size: clamp(1.05rem, 2.3vw, 1.55rem);
+      font-weight: 650;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      animation: rise 0.8s 0.16s both;
+    }
+
+    .hero-description {
+      max-width: 700px;
+      margin: auto;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.7vw, 1.12rem);
+      animation: rise 0.8s 0.24s both;
+    }
+
+    .hero-actions {
+      display: grid;
+      max-width: 760px;
+      margin: 38px auto 0;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      animation: rise 0.8s 0.32s both;
+    }
+
+    .button {
+      position: relative;
+      display: flex;
+      min-height: 60px;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      overflow: hidden;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.2);
+      font-weight: 800;
+      backdrop-filter: blur(14px);
+      transition: 0.28s;
+    }
+
+    .button::before {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.14),
+        transparent
+      );
+      content: "";
+      transform: translateX(-110%);
+      transition: 0.55s;
+    }
+
+    .button:hover {
+      border-color: rgba(255, 36, 54, 0.55);
+      background: rgba(255, 36, 54, 0.08);
+      box-shadow: 0 18px 45px rgba(255, 0, 32, 0.13);
+      transform: translateY(-4px);
+    }
+
+    .button:hover::before {
+      transform: translateX(110%);
+    }
+
+    .button-primary {
+      border-color: #ff5360;
+      background: linear-gradient(135deg, var(--red), var(--dark-red));
+      box-shadow: 0 16px 40px rgba(255, 36, 54, 0.22);
+    }
+
+    .button svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .trust-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-top: 40px;
+      color: #77777e;
+      font-size: 0.8rem;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      animation: rise 0.8s 0.4s both;
+    }
+
+    .trust-row span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .trust-row i {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(22px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    section {
+      padding: 100px 0;
+    }
+
+    .section-heading {
+      max-width: 700px;
+      margin: 0 auto 48px;
+      text-align: center;
+    }
+
+    .kicker {
+      color: var(--red);
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .section-heading h2,
+    .split-content h2,
+    .cta h2 {
+      margin: 12px 0 18px;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+
+    .section-heading p,
+    .split-content p,
+    .cta p {
+      color: var(--muted);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .feature-card {
+      position: relative;
+      overflow: hidden;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.065),
+        rgba(255, 255, 255, 0.018)
+      );
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+      transition: 0.35s;
+    }
+
+    .feature-card::after {
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--red);
+      content: "";
+      filter: blur(65px);
+      opacity: 0;
+      transition: 0.35s;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(255, 36, 54, 0.35);
+      transform: translateY(-7px);
+    }
+
+    .feature-card:hover::after {
+      opacity: 0.28;
+    }
+
+    .feature-icon {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 22px;
+      border: 1px solid rgba(255, 36, 54, 0.25);
+      border-radius: 14px;
+      background: linear-gradient(
+        145deg,
+        rgba(255, 36, 54, 0.2),
+        rgba(255, 36, 54, 0.04)
+      );
+      color: var(--red);
+      place-items: center;
+    }
+
+    .feature-icon svg {
+      width: 23px;
+      height: 23px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
+    }
+
+    .feature-card h3 {
+      margin-bottom: 9px;
+      font-size: 1.08rem;
+    }
+
+    .feature-card p {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .split-layout {
+      display: grid;
+      align-items: center;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 70px;
+    }
+
+    .platform-visual {
+      position: relative;
+      min-height: 440px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      background: linear-gradient(
+        145deg,
+        rgba(255, 36, 54, 0.11),
+        rgba(255, 255, 255, 0.025)
+      );
+      box-shadow: var(--shadow);
+    }
+
+    .rings {
+      position: absolute;
+      inset: 50%;
+      width: 360px;
+      height: 360px;
+      border: 1px solid rgba(255, 36, 54, 0.28);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: spin 18s linear infinite;
+    }
+
+    .rings::before,
+    .rings::after {
+      position: absolute;
+      inset: 44px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .rings::after {
+      inset: 100px;
+      border-color: rgba(255, 36, 54, 0.4);
+    }
+
+    @keyframes spin {
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    .terminal {
+      position: absolute;
+      inset: 70px 34px;
+      padding: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      background: rgba(3, 3, 4, 0.78);
+      box-shadow: 0 20px 60px #000;
+      backdrop-filter: blur(18px);
+    }
+
+    .terminal-top {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 25px;
+    }
+
+    .terminal-top i {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #303035;
+    }
+
+    .terminal-top i:first-child {
+      background: var(--red);
+    }
+
+    .chart {
+      display: flex;
+      height: 190px;
+      align-items: flex-end;
+      gap: 7px;
+      padding: 0 5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .bar {
+      flex: 1;
+      border-radius: 3px 3px 0 0;
+      background: linear-gradient(to top, #7e0010, var(--red));
+      opacity: 0.9;
+      animation: bars 2.2s ease-in-out infinite alternate;
+    }
+
+    .bar:nth-child(2n) {
+      animation-delay: -0.7s;
+    }
+
+    .bar:nth-child(3n) {
+      animation-delay: -1.3s;
+    }
+
+    @keyframes bars {
+      to {
+        height: var(--secondary-height) !important;
+        opacity: 0.55;
+      }
+    }
+
+    .terminal-data {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 19px;
+      color: #777;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+    }
+
+    .terminal-data strong {
+      display: block;
+      margin-top: 3px;
+      color: #fff;
+      font-size: 1rem;
+      letter-spacing: 0;
+    }
+
+    .checks {
+      display: grid;
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .check {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+    }
+
+    .check b {
+      display: grid;
+      width: 24px;
+      height: 24px;
+      flex: none;
+      border-radius: 50%;
+      background: rgba(255, 36, 54, 0.12);
+      color: var(--red);
+      font-size: 0.75rem;
+      place-items: center;
+    }
+
+    .check span {
+      color: #c5c5ca;
+      font-size: 0.95rem;
+    }
+
+    .cta {
+      padding: 70px 40px;
+      border: 1px solid rgba(255, 36, 54, 0.24);
+      border-radius: 32px;
+      background:
+        radial-gradient(circle at 50% 120%, rgba(255, 36, 54, 0.24), transparent 55%),
+        rgba(255, 255, 255, 0.025);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .cta .button {
+      display: inline-flex;
+      min-width: 260px;
+      margin-top: 30px;
+    }
+
+    .contact-grid {
+      display: grid;
+      margin-top: 38px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .contact-item {
+      padding: 25px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--glass);
+    }
+
+    .contact-item small {
+      display: block;
+      margin-bottom: 7px;
+      color: #777;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .contact-item a {
+      font-weight: 750;
+      overflow-wrap: anywhere;
+    }
+
+    .contact-item a:hover {
+      color: var(--red);
+    }
+
+    footer {
+      margin-top: 80px;
+      padding: 38px 0 28px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .risk-warning {
+      max-width: 760px;
+      color: #777;
+      font-size: 0.82rem;
+    }
+
+    .risk-warning strong {
+      color: #aaa;
+    }
+
+    .copyright {
+      margin-top: 30px;
+      padding-top: 22px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      color: #555;
+      font-size: 0.78rem;
+      text-align: center;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: 0.75s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (max-width: 850px) {
+      .navigation-links a:not(.navigation-button) {
+        display: none;
+      }
+
+      .feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .split-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .platform-visual {
+        order: 2;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-content {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: min(calc(100% - 26px), 1160px);
+      }
+
+      .navigation-inner {
+        height: 68px;
+      }
+
+      .brand span {
+        font-size: 0.9rem;
+      }
+
+      .navigation-button {
+        padding: 8px 12px;
+        font-size: 0.78rem;
+      }
+
+      .hero {
+        padding-top: 115px;
+      }
+
+      .hero-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .trust-row {
+        gap: 12px 18px;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 76px 0;
+      }
+
+      .feature-card {
+        padding: 24px;
+      }
+
+      .platform-visual {
+        min-height: 380px;
+      }
+
+      .terminal {
+        inset: 54px 18px;
+      }
+
+      .cta {
+        padding: 52px 20px;
+      }
+
+      .hero-subtitle {
+        letter-spacing: 0.09em;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="grid-background"></div>
+  <div class="orb orb-one"></div>
+  <div class="orb orb-two"></div>
+
+  <header class="navigation" id="navigation">
+    <div class="container navigation-inner">
+      <a class="brand" href="#top" aria-label="Tradivo home">
+        <img
+          src="logo.png"
+          alt="Tradivo logo"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';"
+        >
+        <b class="brand-fallback">T</b>
+        <span>TRADIVO <em>V12</em></span>
+      </a>
+
+      <nav class="navigation-links" aria-label="Primary navigation">
+        <a href="#features">Features</a>
+        <a href="#why-tradivo">Why Tradivo</a>
+        <a href="#contact">Contact</a>
+        <a
+          class="navigation-button"
+          href="https://tradivofx.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Buy Now
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-content">
+        <div class="eyebrow">
+          <span class="status-dot"></span>
+          Built for MetaTrader 5
+        </div>
+
+        <h1>TRADIVO <span class="version">V12</span></h1>
+
+        <div class="hero-subtitle">Professional MT5 Expert Advisor</div>
+
+        <p class="hero-description">
+          Purpose-built automated trading technology for MetaTrader 5,
+          combining intelligent trade execution, integrated risk controls and
+          a streamlined setup in one professional solution.
+        </p>
+
+        <div class="hero-actions">
+          <a
+            class="button button-primary"
+            href="https://t.me/tradivosales"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21.7 3.3 18.5 20c-.2 1.2-.9 1.5-1.9.9l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9-8.1c.4-.4-.1-.6-.6-.2L6 13.8l-4.8-1.5c-1-.3-1.1-1 .2-1.5L20.2 3c.9-.3 1.7.2 1.5.3Z"/>
+            </svg>
+            Telegram Support
+          </a>
+
+          <a
+            class="button"
+            href="https://wa.me/14075285504?text=Hi%21%20I%27m%20interested%20in%20Tradivo%20Magic%20EA%20V12.%20Could%20you%20please%20share%20more%20details%3F"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.9-1.4A10 10 0 1 0 12 2Zm5.8 14.1c-.2.6-1.2 1.1-1.7 1.2-.5.1-1 .2-1.7 0-.4-.1-1-.3-1.7-.6-3-1.3-5-4.4-5.2-4.6-.1-.2-1.2-1.6-1.2-3.1 0-1.5.8-2.2 1.1-2.5.3-.3.6-.4.9-.4h.6c.2 0 .5-.1.7.5l.8 1.9c.1.1.1.4 0 .6l-.3.5-.5.5c-.2.2-.4.4-.2.7.2.3.8 1.3 1.8 2.1 1.2 1.1 2.2 1.4 2.5 1.6.3.2.5.2.7-.1l.9-1.1c.2-.3.4-.3.7-.2l2.1 1c.3.1.5.2.5.4.1.1.1.7-.1 1.3Z"/>
+            </svg>
+            WhatsApp
+          </a>
+
+          <a
+            class="button"
+            href="https://t.me/tradivofx"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21.7 3.3 18.5 20c-.2 1.2-.9 1.5-1.9.9l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9-8.1c.4-.4-.1-.6-.6-.2L6 13.8l-4.8-1.5c-1-.3-1.1-1 .2-1.5L20.2 3c.9-.3 1.7.2 1.5.3Z"/>
+            </svg>
+            Telegram Group
+          </a>
+
+          <a
+            class="button"
+            href="https://tradivofx.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM17 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM3 2H1v2h2l3.6 7.6-1.4 2.5c-.7 1.3.3 2.9 1.8 2.9h12v-2H7.4c-.1 0-.2-.1-.1-.2l.9-1.8h7.5c.8 0 1.5-.4 1.8-1.1L21 5H5.2L4.3 3.1A2 2 0 0 0 3 2Z"/>
+            </svg>
+            Buy Direct From Website
+          </a>
+        </div>
+
+        <div class="trust-row">
+          <span><i></i>MT5 Compatible</span>
+          <span><i></i>Automated Execution</span>
+          <span><i></i>Built-In Risk Controls</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="container">
+        <div class="section-heading reveal">
+          <div class="kicker">Engineered for performance</div>
+          <h2>Professional tools.<br>Focused execution.</h2>
+          <p>
+            Every component is designed to simplify your MT5 workflow while
+            keeping control, speed and reliability at the centre.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card reveal">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 19V9m5 10V5m5 14v-7m5 7V3"/>
+              </svg>
+            </div>
+            <h3>Automated Trade Execution</h3>
+            <p>
+              Execute strategy-driven trades automatically without the need
+              for constant manual monitoring.
+            </p>
+          </article>
+
+          <article class="feature-card reveal">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 3 4 6v5c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V6l-8-3Z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+            </div>
+            <h3>Built-In Risk Management</h3>
+            <p>
+              Integrated controls help you apply a more structured approach to
+              exposure and trade management.
+            </p>
+          </article>
+
+          <article class="feature-card reveal">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 6h16M7 12h10M10 18h4"/>
+              </svg>
+            </div>
+            <h3>User-Friendly Setup</h3>
+            <p>
+              A streamlined installation and configuration process designed
+              for a smoother start on MT5.
+            </p>
+          </article>
+
+          <article class="feature-card reveal">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="m3 17 5-5 4 3 8-9"/>
+                <path d="M15 6h5v5"/>
+              </svg>
+            </div>
+            <h3>Stable Trading Performance</h3>
+            <p>
+              Built with consistency and disciplined execution in mind across
+              supported market conditions.
+            </p>
+          </article>
+
+          <article class="feature-card reveal">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24">
+                <rect x="3" y="4" width="18" height="16" rx="2"/>
+                <path d="M7 9h3m4 0h3M7 14h10"/>
+              </svg>
+            </div>
+            <h3>Fully Compatible with MT5</h3>
+            <p>
+              Created specifically for MetaTrader 5 to integrate cleanly with
+              a modern trading environment.
+            </p>
+          </article>
+
+          <article class="feature-card reveal">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="m13 2-9 12h7l-1 8 10-13h-7V2Z"/>
+              </svg>
+            </div>
+            <h3>Fast &amp; Reliable</h3>
+            <p>
+              Responsive operation and dependable functionality for a more
+              efficient automated workflow.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="why-tradivo">
+      <div class="container split-layout">
+        <div class="platform-visual reveal">
+          <div class="rings"></div>
+
+          <div class="terminal">
+            <div class="terminal-top">
+              <i></i><i></i><i></i>
+            </div>
+
+            <div class="chart">
+              <i class="bar" style="height:34%;--secondary-height:56%"></i>
+              <i class="bar" style="height:48%;--secondary-height:30%"></i>
+              <i class="bar" style="height:42%;--secondary-height:72%"></i>
+              <i class="bar" style="height:62%;--secondary-height:47%"></i>
+              <i class="bar" style="height:55%;--secondary-height:84%"></i>
+              <i class="bar" style="height:73%;--secondary-height:58%"></i>
+              <i class="bar" style="height:64%;--secondary-height:92%"></i>
+              <i class="bar" style="height:88%;--secondary-height:69%"></i>
+              <i class="bar" style="height:78%;--secondary-height:96%"></i>
+            </div>
+
+            <div class="terminal-data">
+              <span>PLATFORM<strong>MT5</strong></span>
+              <span>VERSION<strong>V12</strong></span>
+              <span>STATUS<strong style="color:#ff5360">ACTIVE</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-content reveal">
+          <div class="kicker">Why choose Tradivo V12</div>
+          <h2>Automation with a professional edge.</h2>
+
+          <p>
+            TRADIVO V12 brings execution, usability and risk tools together in
+            a focused Expert Advisor made for traders who value an organised
+            MT5 experience.
+          </p>
+
+          <div class="checks">
+            <div class="check">
+              <b>✓</b>
+              <span>Purpose-built for the MetaTrader 5 ecosystem.</span>
+            </div>
+
+            <div class="check">
+              <b>✓</b>
+              <span>Automated functionality with configurable controls.</span>
+            </div>
+
+            <div class="check">
+              <b>✓</b>
+              <span>Direct support through Telegram and WhatsApp.</span>
+            </div>
+
+            <div class="check">
+              <b>✓</b>
+              <span>Clear setup for a faster path from installation to use.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="cta reveal">
+          <div class="kicker">Take the next step</div>
+
+          <h2>
+            Upgrade your MT5 workflow<br>
+            with TRADIVO V12.
+          </h2>
+
+          <p>
+            Connect with our team for product information, setup details and
+            support.
+          </p>
+
+          <a
+            class="button button-primary"
+            href="https://tradivofx.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Buy Direct From Website
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="container">
+        <div class="section-heading reveal">
+          <div class="kicker">Contact</div>
+          <h2>We’re here to help.</h2>
+          <p>
+            Choose the channel that works best for you and connect directly
+            with the Tradivo team.
+          </p>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-item reveal">
+            <small>Email</small>
+            <a href="mailto:tradivomrs@gmail.com">
+              tradivomrs@gmail.com
+            </a>
+          </div>
+
+          <div class="contact-item reveal">
+            <small>Telegram Support</small>
+            <a
+              href="https://t.me/tradivosales"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @tradivosales
+            </a>
+          </div>
+
+          <div class="contact-item reveal">
+            <small>WhatsApp</small>
+            <a
+              href="https://wa.me/14075285504?text=Hi%21%20I%27m%20interested%20in%20Tradivo%20Magic%20EA%20V12.%20Could%20you%20please%20share%20more%20details%3F"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              +1 407 528 5504
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="brand">
+          <span>TRADIVO <em>V12</em></span>
+        </div>
+
+        <p class="risk-warning">
+          <strong>Risk Warning:</strong>
+          Trading involves substantial risk. Past performance does not
+          guarantee future results. Only trade with funds you can afford to
+          lose and consider seeking independent financial advice.
+        </p>
+      </div>
+
+      <div class="copyright">
+        © <span id="current-year"></span> Tradivo FX. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const navigation = document.getElementById("navigation");
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        navigation.classList.toggle("scrolled", window.scrollY > 24);
+      },
+      { passive: true }
+    );
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    document.querySelectorAll(".reveal").forEach((element) => {
+      observer.observe(element);
+    });
+
+    document.getElementById("current-year").textContent =
+      new Date().getFullYear();
+  </script>
+</body>
+</html>
